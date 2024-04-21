@@ -42,6 +42,33 @@ public class Main {
             System.out.println(average);
         }
 
+        Problema2 p2 = new Problema2();
+        int[] sizesP2 = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
+
+        for (int size : sizesP2) {
+            long traditionalTotalTime = 0;
+            long strassenTotalTime = 0;
+
+            for (int i = 0; i < 10; i++) {
+                int[][] A = generateRandomMatrix(size);
+                int[][] B = generateRandomMatrix(size);
+
+                long traditionalTime = measureTraditionalMultiplicationTime(A, B, p2);
+                long strassenTime = measureStrassenMultiplicationTime(A, B, p2);
+
+                traditionalTotalTime += traditionalTime;
+                strassenTotalTime += strassenTime;
+            }
+
+            long traditionalAverageTime = traditionalTotalTime / 10;
+            long strassenAverageTime = strassenTotalTime / 10;
+
+            System.out.println("Size: " + size);
+            System.out.println("Traditional Multiplication Average Time: " + traditionalAverageTime + " nanoseconds");
+            System.out.println("Strassen Multiplication Average Time: " + strassenAverageTime + " nanoseconds");
+            System.out.println();
+        }
+
     }
 
     //função para gerar uma sequência S aleatória
@@ -59,8 +86,8 @@ public class Main {
     //função para gerar uma sequência S_line que está contida em S
     public static String[] generateRandomS_line(String[] S, int maxSize) {
         Random random = new Random();
-        int start = random.nextInt(S.length); // Posição inicial aleatória em S
-        int length = random.nextInt(maxSize) + 1; // Comprimento aleatório para S_line
+        int start = random.nextInt(S.length); //posição inicial aleatória em S
+        int length = random.nextInt(maxSize) + 1; //comprimento aleatório para S_line
 
         //garante que S_line caiba em S a partir da posição inicial
         if (start + length > S.length) {
@@ -76,6 +103,36 @@ public class Main {
     public static String getRandomCompany(Random random) {
         String[] companies = {"Amazon", "Google", "Apple", "Microsoft", "Facebook", "Tesla", "Netflix", "NVIDIA", "Adobe", "IBM"};
         return companies[random.nextInt(companies.length)];
+    }
+
+    //função para gerar uma matriz aleatória
+    public static int[][] generateRandomMatrix(int size) {
+        Random random = new Random();
+        int[][] matrix = new int[size][size];
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                matrix[i][j] = random.nextInt(100); // Generate random integers between 0 and 99
+            }
+        }
+
+        return matrix;
+    }
+
+    //função para medir o tempo de execução usando a multiplicação tradicinal
+    public static long measureTraditionalMultiplicationTime(int[][] A, int[][] B, Problema2 p2) {
+        long startTime = System.nanoTime();
+        p2.traditionalMatrixMultiply(A, B);
+        long endTime = System.nanoTime();
+        return endTime - startTime;
+    }
+
+    //função para medir o tempo de execução usando a multiplicação de Strassen
+    public static long measureStrassenMultiplicationTime(int[][] A, int[][] B, Problema2 p2) {
+        long startTime = System.nanoTime();
+        p2.multiply(A, B);
+        long endTime = System.nanoTime();
+        return endTime - startTime;
     }
 
 }
